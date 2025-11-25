@@ -1,28 +1,41 @@
+trigger:
+  - master
+
 pool:
   vmImage: 'ubuntu-latest'
 
 steps:
 
+# 1. Checkout source code
+- task: Checkout@1
+  displayName: 'Checkout repository'
+
+# 2. Install Node.js
 - task: NodeTool@0
   inputs:
     versionSpec: '18.x'
   displayName: 'Install Node.js'
 
+# 3. List files (debug step)
+- script: ls -R
+  displayName: "List repository contents"
+
+# 4. Install dependencies
 - script: npm install
-  workingDirectory: 'app'
   displayName: 'Install dependencies'
 
+# 5. Run tests (your package.json has "mocha")
 - script: npm test
-  workingDirectory: 'app'
   displayName: 'Run tests'
 
-- script: npm run build
-  workingDirectory: 'app'
-  displayName: 'Build app'
+# 6. Build (if needed, else remove)
+- script: |
+    echo "No build step defined - skipping"
+  displayName: 'Build step'
 
+# 7. Publish artifacts for deployment
 - task: PublishBuildArtifacts@1
   inputs:
-    pathToPublish: 'app'
+    pathToPublish: '$(System.DefaultWorkingDirectory)'
     artifactName: 'drop'
-  displayName: 'Publish Build Artifacts'
-
+  displayName: 'Publish Artifact'
