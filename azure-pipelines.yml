@@ -6,35 +6,25 @@ pool:
 
 steps:
 
-# 1. Proper checkout syntax
 - checkout: self
   displayName: 'Checkout source code'
 
-# 2. Install Node.js
+- script: |
+    echo "Current directory:"
+    pwd
+    echo "Files:"
+    ls -la
+    echo "Recursive list:"
+    ls -R
+  displayName: "Debug — Show workspace"
+
 - task: NodeTool@0
   inputs:
     versionSpec: '18.x'
   displayName: 'Install Node.js'
 
-# Debug – see your repo
-- script: ls -R
-  displayName: "List repository contents"
-
-# Install dependencies
 - script: npm install
   displayName: 'Install dependencies'
 
-# Run tests
 - script: npm test
   displayName: 'Run tests'
-
-# Build (you can remove if not required)
-- script: echo "No build step required for this app."
-  displayName: 'Build step'
-
-# Publish artifact
-- task: PublishBuildArtifacts@1
-  inputs:
-    pathToPublish: '$(System.DefaultWorkingDirectory)'
-    artifactName: 'drop'
-  displayName: 'Publish Artifact'
