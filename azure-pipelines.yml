@@ -6,9 +6,9 @@ pool:
 
 steps:
 
-# 1. Checkout source code
-- task: Checkout@1
-  displayName: 'Checkout repository'
+# 1. Proper checkout syntax
+- checkout: self
+  displayName: 'Checkout source code'
 
 # 2. Install Node.js
 - task: NodeTool@0
@@ -16,24 +16,23 @@ steps:
     versionSpec: '18.x'
   displayName: 'Install Node.js'
 
-# 3. List files (debug step)
+# Debug – see your repo
 - script: ls -R
   displayName: "List repository contents"
 
-# 4. Install dependencies
+# Install dependencies
 - script: npm install
   displayName: 'Install dependencies'
 
-# 5. Run tests (your package.json has "mocha")
+# Run tests
 - script: npm test
   displayName: 'Run tests'
 
-# 6. Build (if needed, else remove)
-- script: |
-    echo "No build step defined - skipping"
+# Build (you can remove if not required)
+- script: echo "No build step required for this app."
   displayName: 'Build step'
 
-# 7. Publish artifacts for deployment
+# Publish artifact
 - task: PublishBuildArtifacts@1
   inputs:
     pathToPublish: '$(System.DefaultWorkingDirectory)'
